@@ -42,7 +42,7 @@ int sys_barrier_init(sys_barrier_t *barrier, unsigned int nr_threads)
 	(This value is set up upon barrier creation, and must not be modified afterwards) */
 	barrier->max_threads = nr_threads;
 	/* Field to indicate whether the current barrier is an even (0) or an odd (1) barrier */
-	barrier->cur_barrier = FALSE;
+	barrier->cur_barrier = 0;
 
 	return 0;
 }
