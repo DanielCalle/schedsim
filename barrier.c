@@ -30,6 +30,20 @@ int sys_barrier_init(sys_barrier_t *barrier, unsigned int nr_threads)
 	/* Initialize fields in sys_barrier_t
 	     ... To be completed ....
 	*/
+	/* Barrier lock */
+	pthread_mutex_init(&barrier->mutex,NULL);
+	/* Condition variable where threads remain blocked */
+	pthread_cond_init(&barrier->mutex,NULL);
+	/* Number of threads that reached the barrier.
+	[0] Counter for even barriers, [1] Counter for odd barriers */
+	barrier->nr_threads_arrived[0] = 0;
+	barrier->nr_threads_arrived[1] = 0;
+	/* Number of threads that rely on the syncronization barrier
+	(This value is set up upon barrier creation, and must not be modified afterwards) */
+	barrier->max_threads = nr_threads;
+	/* Field to indicate whether the current barrier is an even (0) or an odd (1) barrier */
+	barrier->cur_barrier = FALSE;
+
 	return 0;
 }
 
