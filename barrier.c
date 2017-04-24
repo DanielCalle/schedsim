@@ -33,7 +33,7 @@ int sys_barrier_init(sys_barrier_t *barrier, unsigned int nr_threads)
 	/* Barrier lock */
 	pthread_mutex_init(&barrier->mutex,NULL);
 	/* Condition variable where threads remain blocked */
-	pthread_cond_init(&barrier->mutex,NULL);
+	pthread_cond_init(&barrier->cond,NULL);
 	/* Number of threads that reached the barrier.
 	[0] Counter for even barriers, [1] Counter for odd barriers */
 	barrier->nr_threads_arrived[0] = 0;
@@ -53,6 +53,10 @@ int sys_barrier_destroy(sys_barrier_t *barrier)
 	/* Destroy synchronization resources associated with the barrier
 	      ... To be completed ....
 	*/
+	/* Barrier lock */
+	pthread_mutex_destroy(&barrier->mutex,NULL);
+	/* Condition variable where threads remain blocked */
+	pthread_cond_destroy(&barrier->cond,NULL);
 	return 0;
 }
 
