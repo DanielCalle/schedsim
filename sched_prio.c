@@ -47,8 +47,20 @@ static int compare_tasks_cpu_xxx(void *t1,void *t2)
 	return   /* Complete here  */
 }
 
+static void task_tick_prio(runqueue_t* rq,int cpu)
+{
+	task_t* current=rq->cur_task;
+
+	if (is_idle_task(current))
+		return;
+
+  /* Complete here */
+
+}
+
 sched_class_t sjf_sched= {
   .pick_next_task=pick_next_task_prio,
   .enqueue_task=enqueue_task_prio,
   .steal_task=steal_task_prio
+  .task_tick=task_tick_prio,
 };
