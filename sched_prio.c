@@ -7,11 +7,9 @@ static task_t* pick_next_task_prio(runqueue_t* rq,int cpu)
   task_t* t=head_slist(&rq->tasks);
 
 	/* Current is not on the rq -> let's remove it */
-	if (t) {
+	if (t)
 		remove_slist(&rq->tasks,t);
-    /* Complete here  */
 
-  }
 
 	return t;
 }
@@ -37,22 +35,25 @@ static void enqueue_task_prio(task_t* t,int cpu, int runnable)
   } else
     sorted_insert_slist(&rq->tasks, t, 1, compare_tasks_cpu_prio);  //Push task
 
-  t->on_rq=TRUE
-  rq->nr_runnable++;
+  /* If the task was not runnable before, check whether a preemption is in order or not */
+	if (!runnable) {
+		task_t* current=rq->cur_task;
 
-  /* Complete here  */
-
+		/* Trigger a preemption if this task has a shorter CPU prio than current */
+		if (preemptive_scheduler && !is_idle_task(current) && t->prio<current->prio) {
+			rq->need_resched=TRUE;
+			current->flags|=TF_INSERT_FRONT; /* To avoid unfair situations in the event
+                                                another task with the same length wakes up as well*/
+		}
+	}
 }
 
 static task_t* steal_task_prio(runqueue_t* rq,int cpu)
 {
   task_t* t=tail_slist(&rq->tasks);
 
-  if (t) {
+  if (t)
     remove_slist(&rq->tasks,t);
-    t->on_rq=FALSE
-    rq->nr_runnable--;
-  }
 
   return t;
 }
@@ -69,20 +70,21 @@ Mostly called from time tick functions;
 it mi ght lead to process switch.
 Thi s drives the running preemption;
 */
-static void task_tick_prio(runqueue_t* rq,int cpu)
+/*static void task_tick_prio(runqueue_t* rq,int cpu)
 {
 	task_t* current=rq->cur_task;
 
 	if (is_idle_task(current))
 		return;
 
-  /* Complete here */
+  //Complete here
 
 }
+*/
 
 sched_class_t sjf_sched= {
   .pick_next_task=pick_next_task_prio,
   .enqueue_task=enqueue_task_prio,
   .steal_task=steal_task_prio
-  .task_tick=task_tick_prio,
+//  .task_tick=task_tick_prio,
 };
