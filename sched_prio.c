@@ -14,6 +14,13 @@ static task_t* pick_next_task_prio(runqueue_t* rq,int cpu)
 	return t;
 }
 
+static int compare_tasks_cpu_prio(void *t1,void *t2)
+{
+	task_t* tsk1=(task_t*)t1;
+	task_t* tsk2=(task_t*)t2;
+	return  tsk1->prio-tsk2->prio;
+}
+
 /*
 Called when a task enters a runnable state.
 It puts the scheduling entity (task) into the run queue and
@@ -58,13 +65,6 @@ static task_t* steal_task_prio(runqueue_t* rq,int cpu)
   return t;
 }
 
-static int compare_tasks_cpu_xxx(void *t1,void *t2)
-{
-	task_t* tsk1=(task_t*)t1;
-	task_t* tsk2=(task_t*)t2;
-	return  tsk1->prio-tsk2->prio;
-}
-
 /*
 Mostly called from time tick functions;
 it mi ght lead to process switch.
@@ -82,7 +82,7 @@ Thi s drives the running preemption;
 }
 */
 
-sched_class_t sjf_sched= {
+sched_class_t prio_sched= {
   .pick_next_task=pick_next_task_prio,
   .enqueue_task=enqueue_task_prio,
   .steal_task=steal_task_prio

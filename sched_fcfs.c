@@ -40,7 +40,7 @@ static void enqueue_task_fcfs(task_t* t,int cpu, int runnable)
 
 	// Si la tarea no esta encolada en la run_queue de la cpu especificada,
 	// encolamos dicha tarea.
-	insert_slist(rq->tasks,t);
+	insert_slist(&rq->tasks,t);
 
 }
 
@@ -62,7 +62,7 @@ static task_t* steal_task_fcfs(runqueue_t* rq,int cpu)
 
 }
 
-sched_class_t sjf_sched= {
+sched_class_t fcfs_sched= {
   .pick_next_task=pick_next_task_fcfs,
   .enqueue_task=enqueue_task_fcfs,
   .steal_task=steal_task_fcfs
