@@ -75,13 +75,16 @@ int sys_barrier_wait(sys_barrier_t *barrier)
 	    ... To be completed ....
 	*/
 	pthread_mutex_lock(&barrier->mutex);
-	//barrier->nr_threads_arrived[barrier->cur_barrier]++;
 
-	//if(barrier->nr_threads_arrived[barrier->cur_barrier]!=barrier->max_threads)
+
 	int num_threads = barrier->nr_threads_arrived[0] + barrier->nr_threads_arrived[1];
-	if(num_threads != barrier->max_threads)
+
+	//printf("numero de hilos: %d", num_threads);
+	if(num_threads != barrier->max_threads) {
+		barrier->nr_threads_arrived[barrier->cur_barrier]++;
+		barrier->cur_barrier = (barrier->cur_barrier==0) ? 1 : 0;
 		pthread_cond_wait(&barrier->cond, &barrier->mutex);
-	else {
+	} else {
 		barrier->nr_threads_arrived[0] = 0;
 		barrier->nr_threads_arrived[1] = 0;
 		pthread_cond_broadcast(&barrier->cond);
